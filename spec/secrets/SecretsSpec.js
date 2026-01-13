@@ -801,4 +801,143 @@ describe("Secrets", function() {
             )
         })
     })
+
+    describe("Public API Compatibility", function() {
+        beforeEach(function() {
+            secrets.init()
+            secrets.setRNG("testRandom")
+        })
+
+        it("should maintain all existing public methods with correct signatures", function() {
+            // Test that all expected public methods exist
+            expect(typeof secrets.init).toEqual("function")
+            expect(typeof secrets.share).toEqual("function")
+            expect(typeof secrets.combine).toEqual("function")
+            expect(typeof secrets.newShare).toEqual("function")
+            expect(typeof secrets.extractShareComponents).toEqual("function")
+            expect(typeof secrets.setRNG).toEqual("function")
+            expect(typeof secrets.getConfig).toEqual("function")
+            expect(typeof secrets.str2hex).toEqual("function")
+            expect(typeof secrets.hex2str).toEqual("function")
+            expect(typeof secrets.random).toEqual("function")
+        })
+
+        it("should preserve setRNG() method functionality", function() {
+            // Test that setRNG continues to work with different RNG types
+            secrets.setRNG("testRandom")
+            expect(secrets.getConfig().typeCSPRNG).toEqual("testRandom")
+            
+            // Test with custom RNG function
+            var customRNG = function(bits) {
+                var result = ""
+                for (var i = 0; i < bits; i++) {
+                    result += "1"
+                }
+                return result
+            }
+            
+            secrets.setRNG(customRNG)
+            expect(secrets.getConfig().hasCSPRNG).toEqual(true)
+            
+            // Verify custom RNG works
+            var randomValue = secrets.random(8)
+            expect(randomValue).toEqual("ff") // All 1's in binary = ff in hex
+        })
+
+        it("should preserve all configuration options", function() {
+            // Test default configuration
+            secrets.init()
+            var defaultConfig = secrets.getConfig()
+            expect(defaultConfig.radix).toEqual(16)
+            expect(defaultConfig.bits).toEqual(8)
+            expect(defaultConfig.maxShares).toEqual(255)
+            expect(defaultConfig.hasCSPRNG).toEqual(true)
+            
+            // Test configuration with different bit settings
+            secrets.init(16)
+            var config16 = secrets.getConfig()
+            expect(config16.bits).toEqual(16)
+            expect(config16.maxShares).toEqual(65535)
+            
+            // Test configuration with RNG type
+            secrets.init(8, "testRandom")
+            var configWithRNG = secrets.getConfig()
+            expect(configWithRNG.typeCSPRNG).toEqual("testRandom")
+        })
+
+        it("should maintain identical behavior for share() and combine() operations", function() {
+            var secret = "deadbeef"
+            var numShares = 5
+            var threshold = 3
+            
+            // Test basic share/combine cycle
+            var shares = secrets.share(secret, numShares, threshold)
+            expect(shares.length).toEqual(numShares)
+            
+            var combined = secrets.combine(shares)
+            expect(combined).toEqual(secret)
+            
+            // Test with minimum threshold
+            var minShares = shares.slice(0, threshold)
+            var minCombined = secrets.combine(minShares)
+            expect(minCombined).toEqual(secret)
+            
+            // Test with zero padding
+            var paddedShares = secrets.share(secret, numShares, threshold, 256)
+            var paddedCombined = secrets.combine(paddedShares)
+            expect(paddedCombined).toEqual(secret)
+        })
+
+        it("should maintain str2hex() and hex2str() round-trip functionality", function() {
+            var testStrings = [
+                "Hello World",
+                "¥ · £ · € · $ · ¢",
+                "𐑡𐑹𐑡 ·𐑚𐑻𐑯𐑸𐑛 ·𐑖𐑷",
+                "Test with numbers 123456789",
+                ""
+            ]
+            
+            testStrings.forEach(function(str) {
+                var hex = secrets.str2hex(str)
+                var roundTrip = secrets.hex2str(hex)
+                expect(roundTrip).toEqual(str)
+            })
+        })
+
+        it("should maintain newShare() functionality", function() {
+            var secret = "abcdef123456"
+            var shares = secrets.share(secret, 5, 3)
+            
+            // Generate a new share with ID 6
+            var newShare = secrets.newShare(6, shares.slice(0, 3))
+            expect(typeof newShare).toEqual("string")
+            
+            // Verify the new share works for reconstruction
+            var mixedShares = [shares[0], shares[1], newShare]
+            var combined = secrets.combine(mixedShares)
+            expect(combined).toEqual(secret)
+        })
+
+        it("should maintain extractShareComponents() functionality", function() {
+            var secret = "deadbeef"
+            var shares = secrets.share(secret, 3, 2)
+            
+            var component = secrets.extractShareComponents(shares[0])
+            expect(typeof component.bits).toEqual("number")
+            expect(typeof component.id).toEqual("number")
+            expect(typeof component.data).toEqual("string")
+            expect(component.bits).toEqual(8) // default bits
+            expect(component.id).toEqual(1) // first share
+        })
+
+        it("should maintain random() functionality", function() {
+            var random128 = secrets.random(128)
+            expect(typeof random128).toEqual("string")
+            expect(random128.length).toEqual(32) // 128 bits = 32 hex chars
+            expect(random128).toMatch(/^[0-9a-f]+$/)
+            
+            var random256 = secrets.random(256)
+            expect(random256.length).toEqual(64) // 256 bits = 64 hex chars
+        })
+    })
 })

@@ -38,7 +38,7 @@
 })(this, function(crypto) {
     "use strict"
 
-    var defaults, config, preGenPadding, runCSPRNGTest, CSPRNGTypes
+    var defaults, config, preGenPadding, runCSPRNGTest, CSPRNGTypes, byteToHex
 
     function reset() {
         defaults = {
@@ -89,6 +89,16 @@
         config = {}
         preGenPadding = new Array(1024).join("0") // Pre-generate a string of 1024 0's for use by padLeft().
         runCSPRNGTest = true
+
+        // Initialize precomputed hex lookup table for bytesToHex function
+        byteToHex = []
+        for (var i = 0; i <= 0xff; i++) {
+            var hexOctet = i.toString(16)
+            if (hexOctet.length === 1) {
+                hexOctet = "0" + hexOctet
+            }
+            byteToHex.push(hexOctet)
+        }
 
         // WARNING : Never use 'testRandom' except for testing.
         CSPRNGTypes = [
@@ -165,6 +175,19 @@
                 throw new Error("Invalid binary character.")
             }
             hex = num.toString(16) + hex
+        }
+
+        return hex
+    }
+
+    // Converts binary data (Buffer or Uint8Array) to hexadecimal string
+    // Works cross-platform without using Buffer-specific methods
+    function bytesToHex(bytes) {
+        var hex = "",
+            i
+
+        for (i = 0; i < bytes.length; i++) {
+            hex += byteToHex[bytes[i]]
         }
 
         return hex
@@ -251,7 +274,7 @@
 
             while (str === null) {
                 buf = crypto.randomBytes(bytes)
-                str = construct(bits, buf.toString("hex"), radix, size)
+                str = construct(bits, bytesToHex(buf), radix, size)
             }
 
             return str
@@ -1041,6 +1064,7 @@
         _padLeft: padLeft,
         _hex2bin: hex2bin,
         _bin2hex: bin2hex,
+        _bytesToHex: bytesToHex,
         _hasCryptoGetRandomValues: hasCryptoGetRandomValues,
         _hasCryptoRandomBytes: hasCryptoRandomBytes,
         _getRNG: getRNG,

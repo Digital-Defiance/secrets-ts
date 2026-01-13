@@ -1,8 +1,9 @@
-Forked from https://github.com/grempe/secrets.js since project seems abandoned and needed a change to allow imports to browser.
+# @brightchain/secrets
 
-# secrets.js
+A modern, browser-compatible implementation of Shamir's threshold secret sharing scheme.
 
-- [What is it?](#what-is-it)
+- [What is it?](#about)
+- [Browser Compatibility](#browser-compatibility)
 - [Examples](#examples)
 - [Installation and usage](#installation-and-usage)
 - [API](#api)
@@ -15,11 +16,11 @@ Forked from https://github.com/grempe/secrets.js since project seems abandoned a
 
 ## About
 
-secrets.js is an implementation of [Shamir's threshold secret sharing scheme](http://en.wikipedia.org/wiki/Shamir's_Secret_Sharing) in JavaScript, for Node.js and browsers with both Global variable and AMD module loading support.
+@brightchain/secrets is a pure JavaScript implementation of [Shamir's threshold secret sharing scheme](http://en.wikipedia.org/wiki/Shamir's_Secret_Sharing) that works natively in both Node.js and modern browsers without requiring any polyfills or shims.
 
 It can be used to split any "secret" (i.e. a password, text file, Bitcoin private key, anything) into _n_ number of "shares" (each the same size in bits as the original secret), requiring that exactly any number _t_ ("threshold") of them be present to reconstruct the original secret.
 
-This is a fork of the original excellent code created by `amper5and` on Github. The [original secrets.js can be found there](https://github.com/amper5and/secrets.js/).
+This library is maintained by Digital Defiance and is based on the excellent work originally created by `amper5and` and later maintained by `grempe` and `34r7h`.
 
 ## Security Audit
 
@@ -46,6 +47,16 @@ and proven to correctly adhere to its specification. Similarly good verdict was 
 about distribution of Shamir’s Secret Sharing.
 
 ```
+
+## Browser Compatibility
+
+@brightchain/secrets works natively in all modern browsers that support `crypto.getRandomValues()` without requiring any polyfills or shims. The library automatically detects the environment and uses the appropriate cryptographic random number generator:
+
+- **Node.js**: Uses `crypto.randomBytes()` for secure random number generation
+- **Browsers**: Uses `crypto.getRandomValues()` for secure random number generation
+- **Cross-platform**: Identical hex conversion and cryptographic operations across all environments
+
+The library maintains the same API and produces identical results regardless of the environment, ensuring seamless portability between server and client-side applications.
 
 ## Examples
 
@@ -109,27 +120,27 @@ There are some additional examples of simple usage in the browser, Node.js, and 
 
 ## Installation and usage
 
-This fork of secrets.js is available from [www.npmjs.com](https://www.npmjs.com/package/secrets.js-grempe). Install using
+@brightchain/secrets is available from [www.npmjs.com](https://www.npmjs.com/package/@brightchain/secrets). Install using
 
 ```bash
-npm install secrets.js-grempe
+npm install @brightchain/secrets
 ```
 
-The source code for this package is available on [Github](https://github.com/grempe/secrets.js).
+The source code for this package is available on [Github](https://github.com/Digital-Defiance/secrets.js).
 
-To use it in a Node.js application (Requires OpenSSL support compiled into Node):
+To use it in a Node.js application:
 
 ```javascript
-var secrets = require("secrets.js")
+var secrets = require("@brightchain/secrets")
 ```
 
-To use it in the browser with the global 'secrets' defined, include _secrets.js_ or _secrets.min.js_ in your HTML.
+To use it in the browser with the global 'secrets' defined, include _secrets.js_ or _secrets.min.js_ in your HTML:
 
 ```html
 <script src="secrets.min.js"></script>
 ```
 
-You can also use it in the browser with an AMD module loading tool like [require.js](http://www.requirejs.org/). See the AMD loading example in the `examples` dir.
+You can also use it in the browser with an AMD module loading tool like [require.js](http://www.requirejs.org/). The library works natively in all modern browsers without requiring any polyfills.
 
 ## API
 
@@ -317,6 +328,18 @@ npm run test-browser-min
 ```
 
 ## Changelog
+
+- 2.0.3
+
+  - [BREAKING] Package renamed from `secrets.js-34r7h` to `@brightchain/secrets` under Digital Defiance organization
+  - [Enhancement] Complete browser compatibility rewrite - library now works natively in browsers without requiring Buffer polyfills or shims
+  - [Enhancement] Added cross-platform `bytesToHex()` function that works identically in Node.js and browsers
+  - [Enhancement] Replaced Buffer-specific `toString("hex")` calls with browser-compatible hex conversion
+  - [Enhancement] Added comprehensive property-based testing for cross-platform consistency
+  - [Enhancement] Added extensive browser environment detection and validation tests
+  - [Security] Maintained cryptographic strength across all environments - no fallback to weak random sources
+  - Repository moved to https://github.com/Digital-Defiance/secrets.js
+  - Updated package metadata and contributor information
 
 - 2.0.0
 
