@@ -5,7 +5,7 @@
  * Performance Measurement Helper Utilities
  * 
  * This module provides utilities for measuring and analyzing
- * performance characteristics of the @brightchain/secrets library.
+ * performance characteristics of the @digitaldefiance/secrets library.
  */
 
 // when running in a node.js env.

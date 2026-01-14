@@ -2,12 +2,12 @@
 /*global describe, it, expect, PropertyTestHelper, TestDataGenerators */
 
 import secrets = require('../../src/secrets');
-import type { SecretsConfig, Shares, ShareComponents } from '../../src/types';
+import type { SecretsConfig } from '../../src/types';
 
 
 
 /**
- * Property-Based Testing Suite for @brightchain/secrets
+ * Property-Based Testing Suite for @digitaldefiance/secrets
  * 
  * This test suite validates universal correctness properties across
  * many generated inputs using property-based testing methodology.

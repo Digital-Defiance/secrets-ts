@@ -2,7 +2,7 @@
 /*global secrets, describe, it, expect, PropertyTestHelper, TestDataGenerators */
 
 /**
- * Property-Based Testing Suite for @brightchain/secrets
+ * Property-Based Testing Suite for @digitaldefiance/secrets
  * 
  * This test suite validates universal correctness properties across
  * many generated inputs using property-based testing methodology.

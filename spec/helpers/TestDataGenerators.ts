@@ -1,13 +1,12 @@
 /*jslint passfail: false, bitwise: true, todo: false, maxerr: 1000 */
 
 import secrets = require('../../src/secrets');
-import type { Shares } from '../../src/types';
 
 /**
  * Test Data Generators for Property-Based Testing
  * 
  * This module provides type-safe generators for creating random test data
- * for comprehensive testing of the @brightchain/secrets library.
+ * for comprehensive testing of the @digitaldefiance/secrets library.
  */
 
 /**

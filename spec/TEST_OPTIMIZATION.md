@@ -1,6 +1,6 @@
 # Test Execution Performance Optimization
 
-This document describes the test execution performance optimizations implemented for the @brightchain/secrets library.
+This document describes the test execution performance optimizations implemented for the @digitaldefiance/secrets library.
 
 ## Overview
 

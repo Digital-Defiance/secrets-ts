@@ -1,0 +1,90 @@
+name: TypeScript Version Compatibility
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master, develop]
+  schedule:
+    # Run weekly on Mondays at 9:00 AM UTC
+    - cron: '0 9 * * 1'
+
+jobs:
+  typescript-compatibility:
+    name: Test with TypeScript ${{ matrix.typescript-version }}
+    runs-on: ubuntu-latest
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        typescript-version:
+          - '4.0'
+          - '4.1'
+          - '4.2'
+          - '4.3'
+          - '4.4'
+          - '4.5'
+          - '4.6'
+          - '4.7'
+          - '4.8'
+          - '4.9'
+          - '5.0'
+          - '5.1'
+          - '5.2'
+          - '5.3'
+          - '5.4'
+          - '5.5'
+          - '5.6'
+          - '5.7'
+          - '5.8'
+          - '5.9'
+          - 'latest'
+          - 'next'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'yarn'
+      
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      
+      - name: Install TypeScript ${{ matrix.typescript-version }}
+        run: |
+          if [ "${{ matrix.typescript-version }}" = "latest" ]; then
+            yarn add -D typescript@latest
+          elif [ "${{ matrix.typescript-version }}" = "next" ]; then
+            yarn add -D typescript@next
+          else
+            yarn add -D typescript@~${{ matrix.typescript-version }}
+          fi
+      
+      - name: Display TypeScript version
+        run: yarn tsc --version
+      
+      - name: Type check source code
+        run: yarn typecheck
+        continue-on-error: ${{ matrix.typescript-version == 'next' }}
+      
+      - name: Type check test code
+        run: yarn typecheck:test
+        continue-on-error: ${{ matrix.typescript-version == 'next' }}
+      
+      - name: Build all formats
+        run: yarn build
+        continue-on-error: ${{ matrix.typescript-version == 'next' }}
+      
+      - name: Run tests
+        run: yarn test:fast
+        continue-on-error: ${{ matrix.typescript-version == 'next' }}
+      
+      - name: Report compatibility status
+        if: always()
+        run: |
+          echo "TypeScript ${{ matrix.typescript-version }} compatibility test completed"
+          echo "Check the logs above for any errors or warnings"

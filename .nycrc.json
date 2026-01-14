@@ -1,0 +1,37 @@
+{
+  "all": true,
+  "include": [
+    "secrets.js"
+  ],
+  "exclude": [
+    "spec/**",
+    "node_modules/**",
+    "benchmark/**",
+    "audit/**",
+    "coverage/**",
+    "*.min.js",
+    "Gruntfile.js",
+    "SpecRunner.html",
+    "SpecRunnerMinified.html"
+  ],
+  "reporter": [
+    "text",
+    "text-summary",
+    "html",
+    "lcov",
+    "json",
+    "json-summary"
+  ],
+  "report-dir": "coverage",
+  "temp-dir": ".nyc_output",
+  "check-coverage": true,
+  "lines": 95,
+  "functions": 95,
+  "branches": 90,
+  "statements": 95,
+  "per-file": true,
+  "skip-full": false,
+  "show-process-tree": false,
+  "cache": true,
+  "cache-dir": ".nyc_output/.cache"
+}

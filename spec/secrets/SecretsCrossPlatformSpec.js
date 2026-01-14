@@ -6,7 +6,7 @@
  * 
  * Feature: comprehensive-testing
  * 
- * This test suite validates that the @brightchain/secrets library behaves
+ * This test suite validates that the @digitaldefiance/secrets library behaves
  * identically across Node.js and browser environments. It tests:
  * - Environment detection
  * - RNG consistency across platforms

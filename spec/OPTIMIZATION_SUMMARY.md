@@ -2,7 +2,7 @@
 
 ## Task 12.2 Implementation Summary
 
-This document summarizes the test execution performance optimizations implemented for the @brightchain/secrets library.
+This document summarizes the test execution performance optimizations implemented for the @digitaldefiance/secrets library.
 
 ## What Was Implemented
 

@@ -1,4 +1,4 @@
-# @brightchain/secrets
+# @digitaldefiance/secrets
 
 A modern, browser-compatible implementation of Shamir's threshold secret sharing scheme.
 
@@ -16,7 +16,7 @@ A modern, browser-compatible implementation of Shamir's threshold secret sharing
 
 ## About
 
-@brightchain/secrets is a pure TypeScrip implementation of [Shamir's threshold secret sharing scheme](http://en.wikipedia.org/wiki/Shamir's_Secret_Sharing) that works natively in both Node.js and modern browsers without requiring any polyfills or shims.
+@digitaldefiance/secrets is a pure TypeScrip implementation of [Shamir's threshold secret sharing scheme](http://en.wikipedia.org/wiki/Shamir's_Secret_Sharing) that works natively in both Node.js and modern browsers without requiring any polyfills or shims.
 
 It can be used to split any "secret" (i.e. a password, text file, Bitcoin private key, anything) into _n_ number of "shares" (each the same size in bits as the original secret), requiring that exactly any number _t_ ("threshold") of them be present to reconstruct the original secret.
 
@@ -50,13 +50,68 @@ about distribution of Shamir’s Secret Sharing.
 
 ## Browser Compatibility
 
-@brightchain/secrets works natively in all modern browsers that support `crypto.getRandomValues()` without requiring any polyfills or shims. The library automatically detects the environment and uses the appropriate cryptographic random number generator:
+@digitaldefiance/secrets works natively in all modern browsers that support `crypto.getRandomValues()` without requiring any polyfills or shims. The library automatically detects the environment and uses the appropriate cryptographic random number generator:
 
 - **Node.js**: Uses `crypto.randomBytes()` for secure random number generation
 - **Browsers**: Uses `crypto.getRandomValues()` for secure random number generation
 - **Cross-platform**: Identical hex conversion and cryptographic operations across all environments
 
 The library maintains the same API and produces identical results regardless of the environment, ensuring seamless portability between server and client-side applications.
+
+## TypeScript Support
+
+@digitaldefiance/secrets is written in TypeScript and provides comprehensive type definitions out of the box. The library supports TypeScript 4.0 and above, with continuous testing across multiple TypeScript versions.
+
+### Features
+
+- **Full Type Safety**: All functions, parameters, and return types are fully typed
+- **IntelliSense Support**: Get autocomplete and inline documentation in your IDE
+- **Compile-Time Validation**: Catch errors before runtime with TypeScript's type checking
+- **Multiple Module Formats**: CommonJS, ES Modules, and UMD builds with corresponding type definitions
+
+### Requirements
+
+- TypeScript 4.0.0 or higher (specified as an optional peer dependency)
+- Works with all TypeScript 4.x and 5.x versions
+
+### Usage in TypeScript
+
+```typescript
+import secrets = require('@digitaldefiance/secrets');
+import type { Shares, SecretsConfig, ShareComponents } from '@digitaldefiance/secrets/types';
+
+// All functions are fully typed
+const key: string = secrets.random(512);
+const shares: Shares = secrets.share(key, 10, 5);
+const reconstructed: string = secrets.combine(shares.slice(0, 5));
+
+// Type-safe configuration
+const config: SecretsConfig = secrets.getConfig();
+console.log(config.bits); // number
+console.log(config.maxShares); // number
+
+// Extract share components with type safety
+const components: ShareComponents = secrets.extractShareComponents(shares[0]);
+console.log(components.bits); // number
+console.log(components.id); // number
+console.log(components.data); // string
+```
+
+### ES Modules Support
+
+```typescript
+// Modern ES module syntax
+import secrets from '@digitaldefiance/secrets';
+import type { Shares } from '@digitaldefiance/secrets/types';
+
+const shares: Shares = secrets.share('deadbeef', 5, 3);
+```
+
+### Migration from JavaScript
+
+Existing JavaScript code works without changes. TypeScript users get enhanced type safety automatically. For detailed migration guidance, see [docs/TYPESCRIPT_MIGRATION.md](docs/TYPESCRIPT_MIGRATION.md).
+
+For more information about TypeScript compatibility, see [docs/TYPESCRIPT_COMPATIBILITY.md](docs/TYPESCRIPT_COMPATIBILITY.md).
 
 ## Examples
 
@@ -120,10 +175,10 @@ There are some additional examples of simple usage in the browser, Node.js, and 
 
 ## Installation and usage
 
-@brightchain/secrets is available from [www.npmjs.com](https://www.npmjs.com/package/@brightchain/secrets). Install using
+@digitaldefiance/secrets is available from [www.npmjs.com](https://www.npmjs.com/package/@digitaldefiance/secrets). Install using
 
 ```bash
-npm install @brightchain/secrets
+npm install @digitaldefiance/secrets
 ```
 
 The source code for this package is available on [Github](https://github.com/Digital-Defiance/secrets.js).
@@ -131,7 +186,7 @@ The source code for this package is available on [Github](https://github.com/Dig
 To use it in a Node.js application:
 
 ```javascript
-var secrets = require("@brightchain/secrets")
+var secrets = require("@digitaldefiance/secrets")
 ```
 
 To use it in the browser with the global 'secrets' defined, include _secrets.js_ or _secrets.min.js_ in your HTML:
@@ -331,7 +386,7 @@ npm run test-browser-min
 
 - 2.0.3
 
-  - [BREAKING] Package renamed from `secrets.js-34r7h` to `@brightchain/secrets` under Digital Defiance organization
+  - [BREAKING] Package renamed from `secrets.js-34r7h` to `@digitaldefiance/secrets` under Digital Defiance organization
   - [Enhancement] Complete browser compatibility rewrite - library now works natively in browsers without requiring Buffer polyfills or shims
   - [Enhancement] Added cross-platform `bytesToHex()` function that works identically in Node.js and browsers
   - [Enhancement] Replaced Buffer-specific `toString("hex")` calls with browser-compatible hex conversion

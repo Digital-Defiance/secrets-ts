@@ -2,7 +2,6 @@
 /*global describe, it, expect, beforeEach */
 
 import secrets = require('../../src/secrets');
-import type { SecretsConfig, Shares, ShareComponents } from '../../src/types';
 
 
 
@@ -12,7 +11,7 @@ import type { SecretsConfig, Shares, ShareComponents } from '../../src/types';
  * Feature: comprehensive-testing
  * 
  * This test suite validates complete end-to-end workflows, configuration changes,
- * and error recovery scenarios for the @brightchain/secrets library.
+ * and error recovery scenarios for the @digitaldefiance/secrets library.
  * 
  * Requirements: 6.1, 6.2, 6.4, 6.5
  */

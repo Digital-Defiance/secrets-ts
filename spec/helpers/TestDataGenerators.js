@@ -5,7 +5,7 @@
  * Test Data Generators for Property-Based Testing
  * 
  * This module provides generators for creating random test data
- * for comprehensive testing of the @brightchain/secrets library.
+ * for comprehensive testing of the @digitaldefiance/secrets library.
  */
 
 // when running in a node.js env.

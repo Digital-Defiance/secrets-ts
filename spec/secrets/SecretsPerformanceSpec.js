@@ -2,7 +2,7 @@
 /*global secrets, describe, it, expect, PerformanceHelper, TestDataGenerators */
 
 /**
- * Performance Testing Suite for @brightchain/secrets
+ * Performance Testing Suite for @digitaldefiance/secrets
  * 
  * This test suite validates performance characteristics and ensures
  * the library meets performance requirements across various input sizes.

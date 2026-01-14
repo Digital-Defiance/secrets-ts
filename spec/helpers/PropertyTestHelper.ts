@@ -6,7 +6,7 @@ import secrets = require('../../src/secrets');
  * Property-Based Testing Helper Utilities
  * 
  * This module provides type-safe property-based testing functionality
- * for the @brightchain/secrets library without external dependencies.
+ * for the @digitaldefiance/secrets library without external dependencies.
  */
 
 /**

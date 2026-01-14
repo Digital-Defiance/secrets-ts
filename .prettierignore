@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+dist-test/
+*.min.js
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Test outputs
+SpecRunner.html
+SpecRunnerMinified.html
+
+# Legacy files
+secrets.js
+secrets.min.js
+Gruntfile.js

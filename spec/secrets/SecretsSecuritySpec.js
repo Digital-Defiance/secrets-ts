@@ -2,7 +2,7 @@
 /*global secrets, describe, it, expect, PropertyTestHelper, TestDataGenerators */
 
 /**
- * Security and Cryptographic Testing Suite for @brightchain/secrets
+ * Security and Cryptographic Testing Suite for @digitaldefiance/secrets
  * 
  * This test suite validates cryptographic correctness and security properties
  * of the Shamir's secret sharing implementation.

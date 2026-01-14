@@ -3,7 +3,9 @@
   "compilerOptions": {
     "outDir": "./dist-test",
     "rootDir": ".",
-    "types": ["jasmine", "node"]
+    "types": ["jasmine", "node"],
+    "incremental": true,
+    "tsBuildInfoFile": "./dist-test/.tsbuildinfo"
   },
   "include": ["src/**/*", "spec/**/*"],
   "exclude": ["node_modules", "dist", "dist-test"]

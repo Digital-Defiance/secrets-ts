@@ -5,7 +5,7 @@
  * Property-Based Testing Helper Utilities
  * 
  * This module provides lightweight property-based testing functionality
- * for the @brightchain/secrets library without external dependencies.
+ * for the @digitaldefiance/secrets library without external dependencies.
  */
 
 // when running in a node.js env.

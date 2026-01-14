@@ -2,12 +2,12 @@
 /*global describe, it, expect, PerformanceHelper, TestDataGenerators */
 
 import secrets = require('../../src/secrets');
-import type { SecretsConfig, Shares, ShareComponents } from '../../src/types';
+import type { SecretsConfig } from '../../src/types';
 
 
 
 /**
- * Performance Testing Suite for @brightchain/secrets
+ * Performance Testing Suite for @digitaldefiance/secrets
  * 
  * This test suite validates performance characteristics and ensures
  * the library meets performance requirements across various input sizes.

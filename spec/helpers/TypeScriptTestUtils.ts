@@ -2,11 +2,11 @@
  * TypeScript-Specific Test Utilities
  * 
  * This module provides compile-time type validation tests and utilities
- * specific to TypeScript testing of the @brightchain/secrets library.
+ * specific to TypeScript testing of the @digitaldefiance/secrets library.
  */
 
 import secrets = require('../../src/secrets');
-import type { SecretsConfig, Shares, ShareComponents, CSPRNGType, RNGFunction } from '../../src/types';
+import type { CSPRNGType, RNGFunction, SecretsConfig, ShareComponents } from '../../src/types';
 
 /**
  * Type assertion helper for compile-time type checking

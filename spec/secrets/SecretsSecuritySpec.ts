@@ -2,12 +2,12 @@
 /*global describe, it, expect, PropertyTestHelper, TestDataGenerators */
 
 import secrets = require('../../src/secrets');
-import type { SecretsConfig, Shares, ShareComponents } from '../../src/types';
+import type { SecretsConfig } from '../../src/types';
 
 
 
 /**
- * Security and Cryptographic Testing Suite for @brightchain/secrets
+ * Security and Cryptographic Testing Suite for @digitaldefiance/secrets
  * 
  * This test suite validates cryptographic correctness and security properties
  * of the Shamir's secret sharing implementation.

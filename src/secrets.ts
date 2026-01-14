@@ -2,23 +2,21 @@
 // @preserve author Glenn Rempe <glenn@rempe.us>
 // @license MIT
 
-// TypeScript conversion of the @brightchain/secrets library
+// TypeScript conversion of the @digitaldefiance/secrets library
 // Provides Shamir's Secret Sharing with comprehensive type safety
 
 import type {
-  SecretsConfig,
-  ShareComponents,
-  CSPRNGType,
-  Shares,
-  Share,
-  RNGFunction,
-  NodeCrypto,
-  BrowserCrypto,
-  InternalConfig,
-  Defaults,
-  BinaryString,
-  HexString,
-  Base36String
+    Base36String,
+    BinaryString,
+    CSPRNGType,
+    Defaults,
+    HexString,
+    InternalConfig,
+    RNGFunction,
+    SecretsConfig,
+    Share,
+    ShareComponents,
+    Shares
 } from './types';
 
 // UMD Pattern: Support for Node.js, AMD, and browser globals
@@ -426,6 +424,33 @@ function constructPublicShareString(
 // ============================================================================
 
 const SecretsLibrary = {
+  /**
+   * Initialize the secrets library with specified bit length and RNG type.
+   * 
+   * This function sets up the Galois Field arithmetic tables (logs and exps)
+   * required for Shamir's Secret Sharing. It must be called before using
+   * share() or combine() operations.
+   * 
+   * @param bits - Number of bits for the Galois Field (between 3 and 20, default 8).
+   *               Determines the maximum number of shares (2^bits - 1).
+   * @param rngType - Type of cryptographically secure random number generator to use.
+   *                  If not specified, automatically detects the best available CSPRNG.
+   * @throws {Error} If bits is not an integer between 3 and 20, inclusive.
+   * @throws {Error} If rngType is invalid or RNG initialization fails.
+   * @throws {Error} If initialization fails for any reason.
+   * 
+   * @example
+   * ```typescript
+   * // Initialize with default 8 bits (max 255 shares)
+   * secrets.init();
+   * 
+   * // Initialize with 10 bits (max 1023 shares)
+   * secrets.init(10);
+   * 
+   * // Initialize with specific RNG type
+   * secrets.init(8, 'nodeCryptoRandomBytes');
+   * ```
+   */
   init(bits?: number, rngType?: CSPRNGType): void {
     const logs: number[] = [];
     const exps: number[] = [];
@@ -496,6 +521,28 @@ const SecretsLibrary = {
     }
   },
 
+  /**
+   * Combine shares to reconstruct the original secret.
+   * 
+   * Uses Lagrange interpolation to reconstruct the secret from a threshold
+   * number of shares. The shares must have been created with the same bit
+   * configuration.
+   * 
+   * @param shares - Array of share strings to combine. Must contain at least
+   *                 the threshold number of shares used during secret creation.
+   * @param at - Point at which to evaluate the polynomial (default 0 for secret recovery).
+   *             Use non-zero values to generate new shares.
+   * @returns The reconstructed secret as a hexadecimal string.
+   * @throws {Error} If shares have mismatched bit settings.
+   * @throws {Error} If share format is invalid.
+   * 
+   * @example
+   * ```typescript
+   * const shares = secrets.share('deadbeef', 5, 3);
+   * const secret = secrets.combine(shares.slice(0, 3));
+   * console.log(secret); // 'deadbeef'
+   * ```
+   */
   combine(shares: Shares | string[], at?: number): string {
     let setBits: number | undefined;
     let share: ShareComponents;
@@ -536,6 +583,22 @@ const SecretsLibrary = {
     return bin2hex(at >= 1 ? result : result.slice(result.indexOf("1") + 1));
   },
 
+  /**
+   * Get the current configuration of the secrets library.
+   * 
+   * Returns information about the current Galois Field configuration,
+   * including bit length, radix, maximum shares, and RNG status.
+   * 
+   * @returns Configuration object with current settings.
+   * 
+   * @example
+   * ```typescript
+   * const config = secrets.getConfig();
+   * console.log(`Max shares: ${config.maxShares}`);
+   * console.log(`Has CSPRNG: ${config.hasCSPRNG}`);
+   * console.log(`RNG Type: ${config.typeCSPRNG}`);
+   * ```
+   */
   getConfig(): SecretsConfig {
     const obj: SecretsConfig = {
       radix: config.radix!,
@@ -547,6 +610,26 @@ const SecretsLibrary = {
     return obj;
   },
 
+  /**
+   * Extract the components from a public share string.
+   * 
+   * Parses a share string to extract the bit configuration, share ID,
+   * and share data. Useful for inspecting shares or validating share format.
+   * 
+   * @param share - The share string to parse.
+   * @returns Object containing bits, id, and data components.
+   * @throws {Error} If share format is invalid.
+   * @throws {Error} If share ID is out of valid range.
+   * 
+   * @example
+   * ```typescript
+   * const shares = secrets.share('abc123', 5, 3);
+   * const components = secrets.extractShareComponents(shares[0]);
+   * console.log(`Bits: ${components.bits}`);
+   * console.log(`ID: ${components.id}`);
+   * console.log(`Data: ${components.data}`);
+   * ```
+   */
   extractShareComponents(share: string): ShareComponents {
     let bits: number;
     let id: number;
@@ -601,6 +684,31 @@ const SecretsLibrary = {
     throw new Error("The share data provided is invalid : " + share);
   },
 
+  /**
+   * Set the random number generator to use for share generation.
+   * 
+   * Allows specifying a custom RNG or selecting a specific CSPRNG type.
+   * If no argument is provided, automatically detects and uses the best
+   * available CSPRNG for the current environment.
+   * 
+   * @param rng - Either a CSPRNG type string or a custom RNG function.
+   *              Custom functions must return a binary string of specified length.
+   * @returns True if RNG was successfully set.
+   * @throws {Error} If RNG type is invalid.
+   * @throws {Error} If custom RNG function fails validation tests.
+   * 
+   * @example
+   * ```typescript
+   * // Use specific CSPRNG type
+   * secrets.setRNG('nodeCryptoRandomBytes');
+   * 
+   * // Use custom RNG function
+   * secrets.setRNG((bits) => {
+   *   // Return binary string of specified length
+   *   return customRandomBits(bits);
+   * });
+   * ```
+   */
   setRNG(rng?: CSPRNGType | RNGFunction): boolean {
     const errPrefix = "Random number generator is invalid ";
     const errSuffix =
@@ -658,6 +766,26 @@ const SecretsLibrary = {
     return true;
   },
 
+  /**
+   * Convert a UTF-16 string to hexadecimal representation.
+   * 
+   * Each character is represented by bytesPerChar bytes in the output.
+   * Useful for converting text secrets to hex format before sharing.
+   * 
+   * @param str - The string to convert to hexadecimal.
+   * @param bytesPerChar - Number of bytes per character (1-6, default 2).
+   *                       Higher values support larger character codes.
+   * @returns Hexadecimal string representation.
+   * @throws {Error} If input is not a string.
+   * @throws {Error} If bytesPerChar is not an integer between 1 and 6.
+   * @throws {Error} If character code exceeds maximum for bytesPerChar.
+   * 
+   * @example
+   * ```typescript
+   * const hex = secrets.str2hex('Hello');
+   * const shares = secrets.share(hex, 5, 3);
+   * ```
+   */
   str2hex(str: string, bytesPerChar?: number): HexString {
     let hexChars: number;
     let max: number;
@@ -714,6 +842,26 @@ const SecretsLibrary = {
     return out;
   },
 
+  /**
+   * Convert a hexadecimal string to UTF-16 string representation.
+   * 
+   * Reverses the str2hex operation. Each bytesPerChar bytes in the input
+   * represents one character in the output.
+   * 
+   * @param str - The hexadecimal string to convert.
+   * @param bytesPerChar - Number of bytes per character (1-6, default 2).
+   *                       Must match the value used in str2hex.
+   * @returns UTF-16 string representation.
+   * @throws {Error} If input is not a hexadecimal string.
+   * @throws {Error} If bytesPerChar is not an integer between 1 and 6.
+   * 
+   * @example
+   * ```typescript
+   * const shares = secrets.share(secrets.str2hex('Hello'), 5, 3);
+   * const recovered = secrets.hex2str(secrets.combine(shares));
+   * console.log(recovered); // 'Hello'
+   * ```
+   */
   hex2str(str: string, bytesPerChar?: number): string {
     let hexChars: number;
     let out = "";
@@ -747,6 +895,22 @@ const SecretsLibrary = {
     return out;
   },
 
+  /**
+   * Generate a random hexadecimal string of specified bit length.
+   * 
+   * Uses the configured CSPRNG to generate cryptographically secure
+   * random numbers. Useful for generating random secrets.
+   * 
+   * @param bits - Number of random bits to generate (2-65536).
+   * @returns Random hexadecimal string.
+   * @throws {Error} If bits is not an integer between 2 and 65536.
+   * 
+   * @example
+   * ```typescript
+   * const randomSecret = secrets.random(128);
+   * const shares = secrets.share(randomSecret, 5, 3);
+   * ```
+   */
   random(bits: number): HexString {
     if (
       typeof bits !== "number" ||
@@ -760,6 +924,33 @@ const SecretsLibrary = {
     return bin2hex(config.rng!(bits));
   },
 
+  /**
+   * Split a secret into shares using Shamir's Secret Sharing.
+   * 
+   * Creates numShares shares such that any threshold number of shares
+   * can reconstruct the original secret, but fewer shares reveal no
+   * information about the secret.
+   * 
+   * @param secret - The secret to split, as a hexadecimal string.
+   * @param numShares - Total number of shares to generate (2 to 2^bits-1).
+   * @param threshold - Minimum number of shares needed to reconstruct (2 to numShares).
+   * @param padLength - Zero-pad the secret to a multiple of this length (0-1024, default 128).
+   * @returns Array of share strings.
+   * @throws {Error} If secret is not a string.
+   * @throws {Error} If numShares or threshold are invalid.
+   * @throws {Error} If threshold exceeds numShares.
+   * @throws {Error} If padLength is invalid.
+   * 
+   * @example
+   * ```typescript
+   * // Split a hex secret into 5 shares, requiring 3 to reconstruct
+   * const shares = secrets.share('deadbeef', 5, 3);
+   * 
+   * // Any 3 shares can reconstruct the secret
+   * const recovered = secrets.combine([shares[0], shares[2], shares[4]]);
+   * console.log(recovered); // 'deadbeef'
+   * ```
+   */
   share(
     secret: string,
     numShares: number,
@@ -866,6 +1057,26 @@ const SecretsLibrary = {
     return x as string[];
   },
 
+  /**
+   * Generate a new share with a specific ID from existing shares.
+   * 
+   * Uses Lagrange interpolation to create a new share at the specified
+   * ID point. Useful for generating additional shares without access to
+   * the original secret.
+   * 
+   * @param id - The ID for the new share (1 to 2^bits-1).
+   * @param shares - Array of existing shares (at least threshold number).
+   * @returns New share string with the specified ID.
+   * @throws {Error} If id is invalid.
+   * @throws {Error} If shares array is invalid or empty.
+   * 
+   * @example
+   * ```typescript
+   * const shares = secrets.share('abc123', 5, 3);
+   * // Generate a new share with ID 10
+   * const newShare = secrets.newShare(10, shares.slice(0, 3));
+   * ```
+   */
   newShare(id: number | string, shares: Shares | string[]): string {
     let share: ShareComponents;
     let numericId: number;

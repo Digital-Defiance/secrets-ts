@@ -1,4 +1,4 @@
-// Type-safe error handling for @brightchain/secrets
+// Type-safe error handling for @digitaldefiance/secrets
 // Provides structured error classes with context information
 
 /**

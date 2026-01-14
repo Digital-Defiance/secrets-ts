@@ -1,7 +1,7 @@
-// Type guard functions and runtime validation for @brightchain/secrets
+// Type guard functions and runtime validation for @digitaldefiance/secrets
 
-import type { CSPRNGType, RNGFunction, Shares } from './types';
 import { InvalidParameterError } from './errors';
+import type { CSPRNGType, RNGFunction, Shares } from './types';
 
 /**
  * Type guard to check if a value is a valid secret string (hex)
