@@ -16,7 +16,7 @@ A modern, browser-compatible implementation of Shamir's threshold secret sharing
 
 ## About
 
-@brightchain/secrets is a pure JavaScript implementation of [Shamir's threshold secret sharing scheme](http://en.wikipedia.org/wiki/Shamir's_Secret_Sharing) that works natively in both Node.js and modern browsers without requiring any polyfills or shims.
+@brightchain/secrets is a pure TypeScrip implementation of [Shamir's threshold secret sharing scheme](http://en.wikipedia.org/wiki/Shamir's_Secret_Sharing) that works natively in both Node.js and modern browsers without requiring any polyfills or shims.
 
 It can be used to split any "secret" (i.e. a password, text file, Bitcoin private key, anything) into _n_ number of "shares" (each the same size in bits as the original secret), requiring that exactly any number _t_ ("threshold") of them be present to reconstruct the original secret.
 

@@ -466,16 +466,24 @@
     }
 
     function constructPublicShareString(bits, id, data) {
-        var bitsBase36, idHex, idMax, idPaddingLen, newShareString
+        var bitsBase36, idHex, idMax, idPaddingLen, newShareString, numericId
 
-        id = parseInt(id, config.radix)
         bits = parseInt(bits, 10) || config.bits
         bitsBase36 = bits.toString(36).toUpperCase()
         idMax = Math.pow(2, bits) - 1
-        idPaddingLen = idMax.toString(config.radix).length
-        idHex = padLeft(id.toString(config.radix), idPaddingLen)
+        
+        // Handle both integer and string IDs correctly
+        if (typeof id === "number") {
+            // Integer ID: treat as decimal value
+            numericId = id
+        } else if (typeof id === "string") {
+            // String ID: parse as decimal (not hex)
+            numericId = parseInt(id, 10)
+        } else {
+            numericId = NaN
+        }
 
-        if (typeof id !== "number" || id % 1 !== 0 || id < 1 || id > idMax) {
+        if (typeof numericId !== "number" || numericId % 1 !== 0 || numericId < 1 || numericId > idMax || isNaN(numericId)) {
             throw new Error(
                 "Share id must be an integer between 1 and " +
                     idMax +
@@ -483,6 +491,8 @@
             )
         }
 
+        idPaddingLen = idMax.toString(config.radix).length
+        idHex = padLeft(numericId.toString(config.radix), idPaddingLen)
         newShareString = bitsBase36 + idHex + data
 
         return newShareString
@@ -1017,7 +1027,7 @@
             for (i = 0, len = secret.length; i < len; i++) {
                 subShares = getShares(secret[i], numShares, threshold)
                 for (j = 0; j < numShares; j++) {
-                    x[j] = x[j] || subShares[j].x.toString(config.radix)
+                    x[j] = x[j] || subShares[j].x  // Keep as integer
                     y[j] = padLeft(subShares[j].y.toString(2)) + (y[j] || "")
                 }
             }
@@ -1034,22 +1044,24 @@
         },
 
         // Generate a new share with id `id` (a number between 1 and 2^bits-1)
-        // `id` can be a Number or a String in the default radix (16)
+        // `id` can be a Number or a String (parsed as decimal)
         newShare: function(id, shares) {
-            var share, radid
+            var share, numericId
 
-            if (id && typeof id === "string") {
-                id = parseInt(id, config.radix)
+            if (typeof id === "string") {
+                numericId = parseInt(id, 10) // Parse as decimal
+            } else if (typeof id === "number") {
+                numericId = Math.floor(id) // Ensure integer
+            } else {
+                numericId = NaN
             }
 
-            radid = id.toString(config.radix)
-
-            if (id && radid && shares && shares[0]) {
+            if (numericId && shares && shares[0]) {
                 share = this.extractShareComponents(shares[0])
                 return constructPublicShareString(
                     share.bits,
-                    radid,
-                    this.combine(shares, id)
+                    numericId,
+                    this.combine(shares, numericId)
                 )
             }
 
