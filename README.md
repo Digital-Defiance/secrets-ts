@@ -2,6 +2,8 @@
 
 A modern, browser-compatible implementation of Shamir's threshold secret sharing scheme.
 
+[Live Demo](https://digital-defiance.github.io/secrets-ts/)
+
 - [What is it?](#about)
 - [Browser Compatibility](#browser-compatibility)
 - [Examples](#examples)
@@ -77,8 +79,8 @@ The library maintains the same API and produces identical results regardless of 
 ### Usage in TypeScript
 
 ```typescript
-import secrets = require('@digitaldefiance/secrets');
-import type { Shares, SecretsConfig, ShareComponents } from '@digitaldefiance/secrets/types';
+import secrets = require("@digitaldefiance/secrets");
+import type { Shares, SecretsConfig, ShareComponents } from "@digitaldefiance/secrets/types";
 
 // All functions are fully typed
 const key: string = secrets.random(512);
@@ -101,10 +103,10 @@ console.log(components.data); // string
 
 ```typescript
 // Modern ES module syntax
-import secrets from '@digitaldefiance/secrets';
-import type { Shares } from '@digitaldefiance/secrets/types';
+import secrets from "@digitaldefiance/secrets";
+import type { Shares } from "@digitaldefiance/secrets/types";
 
-const shares: Shares = secrets.share('deadbeef', 5, 3);
+const shares: Shares = secrets.share("deadbeef", 5, 3);
 ```
 
 ### Migration from JavaScript
@@ -119,56 +121,56 @@ Divide a 512-bit key, expressed in hexadecimal form, into 10 shares, requiring t
 
 ```javascript
 // generate a 512-bit key
-var key = secrets.random(512) // => key is a hex string
+var key = secrets.random(512); // => key is a hex string
 
 // split into 10 shares with a threshold of 5
-var shares = secrets.share(key, 10, 5)
+var shares = secrets.share(key, 10, 5);
 // => shares = ['801xxx...xxx','802xxx...xxx','803xxx...xxx','804xxx...xxx','805xxx...xxx']
 
 // combine 4 shares
-var comb = secrets.combine(shares.slice(0, 4))
-console.log(comb === key) // => false
+var comb = secrets.combine(shares.slice(0, 4));
+console.log(comb === key); // => false
 
 // combine 5 shares
-comb = secrets.combine(shares.slice(4, 9))
-console.log(comb === key) // => true
+comb = secrets.combine(shares.slice(4, 9));
+console.log(comb === key); // => true
 
 // combine ALL shares
-comb = secrets.combine(shares)
-console.log(comb === key) // => true
+comb = secrets.combine(shares);
+console.log(comb === key); // => true
 
 // create another share with id 8
-var newShare = secrets.newShare(8, shares) // => newShare = '808xxx...xxx'
+var newShare = secrets.newShare(8, shares); // => newShare = '808xxx...xxx'
 
 // reconstruct using 4 original shares and the new share:
-comb = secrets.combine(shares.slice(1, 5).concat(newShare))
-console.log(comb === key) // => true
+comb = secrets.combine(shares.slice(1, 5).concat(newShare));
+console.log(comb === key); // => true
 ```
 
 Divide a password containing a mix of numbers, letters, and other characters, requiring that any 3 shares must be present to reconstruct the original password:
 
 ```javascript
-var pw = "<<PassWord123>>"
+var pw = "<<PassWord123>>";
 
 // convert the text into a hex string
-var pwHex = secrets.str2hex(pw) // => hex string
+var pwHex = secrets.str2hex(pw); // => hex string
 
 // split into 5 shares, with a threshold of 3
-var shares = secrets.share(pwHex, 5, 3)
+var shares = secrets.share(pwHex, 5, 3);
 
 // combine 2 shares:
-var comb = secrets.combine(shares.slice(1, 3))
+var comb = secrets.combine(shares.slice(1, 3));
 
 //convert back to UTF string:
-comb = secrets.hex2str(comb)
-console.log(comb === pw) // => false
+comb = secrets.hex2str(comb);
+console.log(comb === pw); // => false
 
 // combine 3 shares:
-comb = secrets.combine([shares[1], shares[3], shares[4]])
+comb = secrets.combine([shares[1], shares[3], shares[4]]);
 
 //convert back to UTF string:
-comb = secrets.hex2str(comb)
-console.log(comb === pw) // => true
+comb = secrets.hex2str(comb);
+console.log(comb === pw); // => true
 ```
 
 There are some additional examples of simple usage in the browser, Node.js, and AMD loading (require.js) in the `examples` folder.
@@ -186,7 +188,7 @@ The source code for this package is available on [Github](https://github.com/Dig
 To use it in a Node.js application:
 
 ```javascript
-var secrets = require("@digitaldefiance/secrets")
+var secrets = require("@digitaldefiance/secrets");
 ```
 
 To use it in the browser with the global 'secrets' defined, include _secrets.js_ or _secrets.min.js_ in your HTML:
@@ -319,21 +321,21 @@ Shamir's secret sharing scheme is "information-theoretically secure" and "perfec
 When `secrets.share()` is called with a `padLength`, the `secret` is zero-padded so that it's length is a multiple of the padLength. The second example above can be modified to use 1024-bit zero-padding, producing longer shares:
 
 ```javascript
-var pw = "<<PassWord123>>"
+var pw = "<<PassWord123>>";
 
 // convert the text into a hex string
-var pwHex = secrets.str2hex(pw) // => 240-bit password
+var pwHex = secrets.str2hex(pw); // => 240-bit password
 
 // split into 5 shares, with a threshold of 3, WITH zero-padding
-var shares = secrets.share(pwHex, 5, 3, 1024) // => 1024-bit padded shares
+var shares = secrets.share(pwHex, 5, 3, 1024); // => 1024-bit padded shares
 
 // combine 3 shares
-var comb = secrets.combine([shares[1], shares[3], shares[4]])
+var comb = secrets.combine([shares[1], shares[3], shares[4]]);
 
 // convert back to UTF string
-comb = secrets.hex2str(comb)
+comb = secrets.hex2str(comb);
 
-console.log(comb === pw) // => true
+console.log(comb === pw); // => true
 ```
 
 There is a [workbook containing some additional padding examples](https://github.com/grempe/secrets.js/blob/master/examples/padding.js).
@@ -385,7 +387,6 @@ npm run test-browser-min
 ## Changelog
 
 - 2.0.3
-
   - [BREAKING] Package renamed from `secrets.js-34r7h` to `@digitaldefiance/secrets` under Digital Defiance organization
   - [Enhancement] Complete browser compatibility rewrite - library now works natively in browsers without requiring Buffer polyfills or shims
   - [Enhancement] Added cross-platform `bytesToHex()` function that works identically in Node.js and browsers
@@ -397,7 +398,6 @@ npm run test-browser-min
   - Updated package metadata and contributor information
 
 - 2.0.0
-
   - [BREAKING] Removed SJCL random number generator. Modern browsers have all the support they need for `crypto.getRandomValues()`.
   - Modernize build and test process
   - Lint and Prettier JS and Markdown files
@@ -406,11 +406,9 @@ npm run test-browser-min
   - Remove references to, and use of, Bower installation
 
 - 1.2.0
-
   - Added `secrets.seedRNG()` function to allow seeding the SJCL RNG instantly via Browser or Node.js RNG's or with entropy from an external server.
 
 - 1.1.0
-
   - Added `grunt watch` task to auto-run tests and minification on every JavaScript file save.
   - Minified file now contains name, version and author comments automatically.
   - Configured basic `grunt` tasks for minification, Node.js testing with Jasmine, jshint, eslint. Removed Karma test runner and manual minification and testing steps. Just run `grunt`.
@@ -419,14 +417,12 @@ npm run test-browser-min
   - [Enhancement] You can now pass a string to `init()` or `setRNG()` which forces loading of a specific RNG (whether it will work or not in your current env!) \* Re-factored how `getRNG()` works internally. Now it returns small focused functions, not a giant function with detection conditionals. If SJCL is loaded the RNG tests are skipped since they would always initially fail due to the entropy pool being initally empty. This should be OK for this 'trusted' RNG.
 
 - 1.0.0
-
   - Packaging cleanup and ready for 1.0.0 release on Bower and NPM.
   - [Enhancement] Now supports the Javascript Universal Module Definition [UMDJS](https://github.com/umdjs/umd) for loading this module in the Browser with a `secrets` global, using an AMD Module loader like require.js, or in Node.js apps.
   - Refactor getRNG() to no longer have embedded `require` now that crypto is included on module load with the UMDJS change.
   - Updated README.md with info about this fork of secrets.js. \* Added some simple examples of usage to the examples folder.
 
 - 0.2.0
-
   - [Enhancement] Extend the output of getConfig() to include the `radix` and `maxShares` properties.
   - [Security] Zero-pad all secrets in multiples of 128 bits (instead of 0) by default.
   - [Performance] Massive (100x) speed optimization to padLeft() private function (the second most frequently called block of code internally).
