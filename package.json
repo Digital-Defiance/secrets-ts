@@ -1,24 +1,24 @@
 {
   "name": "@digitaldefiance/secrets",
-  "version": "2.0.6",
+  "version": "2.0.7",
   "description": "Shamir's threshold secret sharing scheme",
   "main": "dist/secrets.js",
   "module": "dist/esm/secrets.js",
   "types": "dist/secrets.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/secrets.d.ts",
       "import": "./dist/esm/secrets.js",
-      "require": "./dist/secrets.js",
-      "types": "./dist/secrets.d.ts"
+      "require": "./dist/secrets.js"
     },
     "./umd": {
-      "default": "./dist/umd/secrets.js",
-      "types": "./dist/umd/secrets.d.ts"
+      "types": "./dist/umd/secrets.d.ts",
+      "default": "./dist/umd/secrets.js"
     },
     "./types": {
+      "types": "./dist/types.d.ts",
       "import": "./dist/esm/types.js",
-      "require": "./dist/types.js",
-      "types": "./dist/types.d.ts"
+      "require": "./dist/types.js"
     },
     "./package.json": "./package.json"
   },
