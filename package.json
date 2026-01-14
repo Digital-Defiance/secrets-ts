@@ -2,11 +2,26 @@
     "name": "@brightchain/secrets",
     "version": "2.0.3",
     "description": "Shamir's threshold secret sharing scheme",
-    "main": "secrets.js",
+    "main": "dist/secrets.js",
+    "module": "dist/esm/secrets.js",
+    "types": "dist/secrets.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/esm/secrets.js",
+            "require": "./dist/secrets.js",
+            "types": "./dist/secrets.d.ts"
+        },
+        "./umd": {
+            "default": "./dist/umd/secrets.js",
+            "types": "./dist/umd/secrets.d.ts"
+        }
+    },
     "directories": {
         "example": "examples"
     },
     "devDependencies": {
+        "@types/jasmine": "^5.1.15",
+        "@types/node": "^25.0.8",
         "grunt": "^1.0",
         "grunt-check-modules": "^1.0.0",
         "grunt-contrib-uglify": "^4.0",
@@ -15,10 +30,21 @@
         "jasmine": "^3.4.0",
         "jquery": "^3.4",
         "nyc": "^17.1.0",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.9.3",
         "uglify-js": "^3.6.0"
     },
     "scripts": {
-        "build": "./node_modules/.bin/grunt uglify",
+        "build": "yarn build:ts:all && yarn build:ts:umd && yarn build:umd:min",
+        "build:ts": "./node_modules/.bin/tsc",
+        "build:ts:esm": "./node_modules/.bin/tsc -p tsconfig.esm.json",
+        "build:ts:umd": "./node_modules/.bin/tsc -p tsconfig.umd.json",
+        "build:ts:all": "yarn build:ts && yarn build:ts:esm && yarn build:ts:umd",
+        "build:umd:min": "./node_modules/.bin/grunt uglify",
+        "build:ts:watch": "./node_modules/.bin/tsc --watch",
+        "build:ts:test": "./node_modules/.bin/tsc -p tsconfig.test.json",
+        "typecheck": "./node_modules/.bin/tsc --noEmit",
+        "typecheck:test": "./node_modules/.bin/tsc -p tsconfig.test.json --noEmit",
         "test": "./node_modules/.bin/jasmine",
         "test:coverage": "./node_modules/.bin/nyc ./node_modules/.bin/jasmine",
         "test:coverage:report": "./node_modules/.bin/nyc report",
@@ -103,5 +129,10 @@
         "url": "https://github.com/Digital-Defiance/secrets.js/issues"
     },
     "homepage": "https://github.com/Digital-Defiance/secrets.js",
-    "typings": "./secrets.js.d.ts"
+    "files": [
+        "dist/**/*",
+        "README.md",
+        "LICENSE"
+    ],
+    "browser": "dist/umd/secrets.js"
 }

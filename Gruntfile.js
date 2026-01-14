@@ -11,8 +11,8 @@ module.exports = function(grunt) {
                 preserveComments: "some"
             },
             build: {
-                src: "secrets.js",
-                dest: "secrets.min.js"
+                src: "dist/umd/secrets.js",
+                dest: "dist/umd/secrets.min.js"
             }
         },
 
