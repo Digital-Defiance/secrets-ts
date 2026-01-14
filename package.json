@@ -1,6 +1,6 @@
 {
   "name": "@digitaldefiance/secrets",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "Shamir's threshold secret sharing scheme",
   "main": "dist/secrets.js",
   "module": "dist/esm/secrets.js",
